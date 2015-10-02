@@ -1,0 +1,239 @@
+<!-- 
+	Main page of site.
+	This page will contain Left side bar list of registered user.
+	Also contain main content to allow post and reply on post.
+ -->
+<section id="content">
+  	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+    	<div class="left-side">
+        	<div class="user-panel">
+	        	<ul>
+                	<li><a href=""><span> <img src="post/assets/profile_pics/img-01.jpg" alt="Mean Book user" /> </span>  <u> More or less random </u></a> </li>
+                    <li><a href=""><span> <img src="post/assets/profile_pics/img-02.jpg" alt="Mean Book user" /> </span>  <u> Different typefaces </u></a> </li>
+                    <li><a href=""><span> <img src="post/assets/profile_pics/img-03.jpg" alt="Mean Book user" /> </span>  <u> Publication is not </u></a> </li>
+                    <li><a href=""><span> <img src="post/assets/profile_pics/img-04.jpg" alt="Mean Book user" /> </span>  <u> Layout impression </u></a> </li>
+                    <li><a href=""><span> <img src="post/assets/profile_pics/img-05.jpg" alt="Mean Book user" /> </span>  <u> Realistic so </u></a> </li>
+                    <li><a href=""><span> <img src="post/assets/profile_pics/img-06.jpg" alt="Mean Book user" /> </span>  <u> Dummy text is </u></a> </li>
+                    <li><a href=""><span> <img src="post/assets/profile_pics/img-07.jpg" alt="Mean Book user" /> </span>  <u> Advantageous when the </u></a> </li>
+                    <li><a href=""><span> <img src="post/assets/profile_pics/img-08.jpg" alt="Mean Book user" /> </span>  <u> Overall visual </u></a> </li>
+                    <li><a href=""><span> <img src="post/assets/profile_pics/img-09.jpg" alt="Mean Book user" /> </span>  <u> Impression and </u></a> </li>
+                    <li><a href=""><span> <img src="post/assets/profile_pics/img-010.jpg" alt="Mean Book user" /> </span>  <u> More or less random </u></a> </li>
+	            </ul>
+            </div>
+        </div>
+     </div>
+     
+     <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12 div_post">
+     	<div class="spacing" data-ng-controller="PostController">
+			<div class="news-feed">
+				<form name="postForm" class="form-horizontal" role="form" data-ng-submit="add(postForm.$valid)" novalidate>
+					<div ng-class="{ 'has-error' : submitted && postForm.content.$invalid }">
+						<label mean-token="'create-content'">News Feed</label>
+						<textarea placeholder="Comment Here..." name="txt_content" id="txt_content" data-ng-model="post.content" required>
+						
+						</textarea>
+						<div ng-show="submitted && postForm.content.$invalid" class="help-block">
+							<p ng-show="postForm.content.$error.required">Please add content to post.</p>
+						</div>
+					</div>
+					<div class="post-bottom" ng-controller="HeaderController as hdrctr">
+						<div class="img-upload"><a href=""> <i class="fa fa-camera"></i> </a> </div>
+						<button ng-if="hdrctr.hdrvars.authenticated" mean-token="'create-submit'" type="submit">
+							<span>Post</span>
+						</button>
+						<button ng-if="! hdrctr.hdrvars.authenticated" class="login_msg" type="submit">
+							<span>Post</span>
+						</button>
+					</div>
+				</form>
+			</div>
+			
+			<div class="comment-part">
+				<ul class="comment-list">
+					<li data-ng-repeat="post in posts">
+						<div class="comment-list-left">
+							<span> <img src="post/assets/profile_pics/img-01.jpg" alt="Mean Book user" /></span>
+						</div>
+						<div class="comment-list-right">
+							<div class="comment-here">
+								<p>{{post.content}}</p>
+								<div class="comment-bottom">	
+									<div ng-controller="HeaderController as hdrctr">
+										<span ng-if="hdrctr.hdrvars.authenticated"><i class="fa fa-thumbs-o-up"></i> Like </span>
+										<span ng-if="hdrctr.hdrvars.authenticated" class="reply_span"><i class="fa fa-reply"></i> Reply</span>	
+										<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-pencil-square-o"></i> Edit </span>
+										<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-trash-o"></i> Delete </span>
+									</div>
+									<div class="replay-again">
+										<form name="replyForm" ng-submit="addReply()">
+											<input type="text" name="reply_{{post._id}}" id="reply_{{post._id}}" placeholder="Reply here..." ng-model="reply_data.content" required/>
+											<input type="text" ng-show="false" name="post_{{post._id}}" id="post_{{post._id}}" ng-value="post._id" ng-model="reply_data.postid" required/>
+											<button type="submit" id="btn_reply_{{post._id}}">POST</button>
+											<!-- <a href=""><i class="fa fa-camera"></i></a> -->
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					<!-- <li>
+						<div class="comment-list-left">
+							<span> <img src="post/assets/profile_pics/img-01.jpg" alt="Mean Book user" /></span>
+						</div>
+						<div class="comment-list-right">
+							<div class="comment-here">
+								<p>Dummy text is also used to demonstrate the appearance of different typefaces and layouts, and in general the content dum text is nonsensical due to its widespread use as filler text for layouts, non-readability is of.</p>
+								<div class="comment-bottom" ng-controller="HeaderController as hdrctr">
+									<span><a href=""> <i class="fa fa-thumbs-up"></i> Like </a></span>
+									<span><a href=""> <i class="fa fa-retweet"></i> Replay </a></span>
+									<span><a href=""> <i class="fa fa-clock-o"></i> 8:32 am </a></span>
+								</div>
+							 </div>    
+							 
+							 <div class="comment-replay">
+								 <div class="comment-list-left">
+									<span> <img src="post/assets/profile_pics/img-02.jpg" alt="Mean Book user" /></span>
+								</div>
+								<div class="comment-here">
+									<p>Dummy text is also used to demonstrate the appearance of different typefaces and layouts, and in general the content dum text is nonsensical due to its widespread use as filler text for layouts, non-readability is of.</p>
+									<div class="comment-bottom">
+										<span><a href=""> <i class="fa fa-thumbs-up"></i> Like </a></span>
+										<span><a href=""> <i class="fa fa-retweet"></i> Replay </a></span>
+										<span><a href=""> <i class="fa fa-clock-o"></i> 8:32 am </a></span>
+										
+										<div class="replay-again">
+											<form>
+												<input type="text" name="replay" placeholder="Replay here..." />
+												<button>POST</button>
+												<a href=""><i class="fa fa-camera"></i></a>
+											  </form>
+										</div>
+									</div>
+								 </div>    
+							 </div>
+							 
+							 <div class="comment-replay">
+								 <div class="comment-list-left">
+									<span> <img src="post/assets/profile_pics/img-03.jpg" alt="Mean Book user" /></span>
+								</div>
+								<div class="comment-here">
+									<p>Dummy text is also used to demonstrate the appearance of different typefaces and layouts, and in general the content dum text is nonsensical due to its widespread use as filler text for layouts, non-readability is of.</p>
+									<div class="comment-bottom">
+										<span><a href=""> <i class="fa fa-thumbs-up"></i> Like </a></span>
+										<span><a href=""> <i class="fa fa-retweet"></i> Replay </a></span>
+										<span><a href=""> <i class="fa fa-clock-o"></i> 8:32 am </a></span>
+									</div>
+								 </div>    
+							 </div>
+						</div>
+					</li>
+					
+					
+					<li>
+						<div class="comment-list-left">
+							<span> <img src="post/assets/profile_pics/img-04.jpg" alt="Mean Book user" /></span>
+						</div>
+						<div class="comment-list-right">
+							<div class="comment-here">
+								<p>Dummy text is also used to demonstrate the appearance of different typefaces and layouts, and in general the content dum text is nonsensical due to its widespread use as filler text for layouts, non-readability is of.</p>
+								<div class="comment-bottom">
+									<span><a href=""> <i class="fa fa-thumbs-up"></i> Like </a></span>
+									<span><a href=""> <i class="fa fa-retweet"></i> Replay </a></span>
+									<span><a href=""> <i class="fa fa-clock-o"></i> 8:32 am </a></span>
+								</div>
+							 </div>    
+						</div>
+					</li> -->
+					
+				</ul>
+			</div>
+        </div>
+	</div>
+</section>
+<div class="modal" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+	<div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> Login </h4>
+            </div>
+            <div class="modal-body">
+				<div class="main-form" ng-controller="AuthCtrl" ng-class="($state.is('auth.register')) ? 'register-form' : ''">
+					<div class="login-form__left" ui-view="">
+						<div data-ng-controller="LoginCtrl as login">
+
+							<div class="alert alert-danger animated fadeIn" ng-show="login.loginError">{{login.loginError}}</div>
+
+							<h2>Login</h2>
+
+							<form id="login_form" ng-submit="login.login()">
+								<div class="input-wrapper">
+									<input required id="email_block" type="email" name="email" placeholder="Email Address" ng-model="login.user.email">
+									<div class="error_message">Please enter a correct info #</div>
+									<span class="pic email"></span>
+								</div>
+								<div class="input-wrapper">
+									<input required id="password_block" name="password" type="{{login.input.type}}" placeholder="{{login.input.placeholder}}" ng-model="login.user.password">
+									<div class="error_message">Please enter a correct info #</div>
+										<span class="pic password {{login.input.iconClass}}" ng-click = "login.togglePasswordVisible()">
+											  <div class="hide_text_password">
+												  {{login.input.tooltipText}}
+											  </div>
+										</span>
+								</div>
+								<div class="forgot_password">
+									<a ui-sref='forgot-password'>Forgot your password?</a>
+								</div>
+								<div class="button_login">
+									<button type="submit" class="submit_button">Login</button>
+									<p>Don't have an account?</p>
+									<a ui-sref='auth.register' >Sign up</a>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secure redeemPromo" data-dismiss="modal">Continue</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="loginMsgModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+	<div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">&nbsp;</h4>
+            </div>
+            <div class="modal-body">
+				<div>
+					<p class="lead">Please login or register to post something to the newsfeed.</p>
+					<p class="lead"><a class="login_link"><u>Click Here</u></a> to Login.</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$(document).on('click', '.reply_span', function(){
+			$('.replay-again').css('display', 'none');
+			$(this).parent().next().css('display', 'inline-block');
+		});
+		$(document).on('click', '.login_msg', function(){
+			$('#loginMsgModal').modal('show');
+		});
+		$('.login_link').on('click', function(){
+			$('#loginMsgModal').modal('hide');
+			$('#loginModal').modal('show');
+		});
+	});
+</script>

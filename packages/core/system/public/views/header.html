@@ -1,0 +1,62 @@
+<!-- 
+	Display header portion of site.
+	This will include Logo and top menu.
+	Top menu contains,
+		- Login and Register link. ( If user not Logged in )
+		- Username drop down that will contain two link for My Profile and Logout. ( If user Logged in )
+	
+ -->
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		<title>Mean Book</title>
+
+		<!-- Bootstrap -->
+		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+		<link href="system/assets/css/font-awesome.css" rel="stylesheet">
+		<link href="system/assets/css/bootstrap.css" rel="stylesheet">
+		<link href="system/assets/css/style.css" rel="stylesheet">
+		<link href="system/assets/css/responsive.css" rel="stylesheet">
+	</head>
+	<body>
+		<header>
+			<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+				<div class="left-side">
+					<h1 class="logo"> <a href="/"><img src="system/assets/img/logo.png" alt="" /></a> </h1>
+				</div>
+			</div>
+			<div class="col-lg-9 col-md-9 col-sm-8 col-xs-12" ng-controller="HeaderController as hdrctr">
+				<div class="header-right">
+					<div class="user-link">
+						<div class="default-message" ng-if="hdrctr.hdrvars.authenticated">
+							<ul class="user_name_menu">
+								<li class="dropdown" dropdown on-toggle="toggled(open)">
+									<a href="#" class="dropdown-toggle" dropdown-toggle>
+										<i class="fa fa-user"></i>{{hdrctr.hdrvars.user.name}}</span> <b class="caret"></b>
+									</a>
+									<ul class="dropdown-menu">
+										<li><a href="#">My Profile</a></li>
+										<li><a href="#" ng-click="hdrctr.logout()">Log Out</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<a href="javascript:void(0)" class="login_link" ng-if="(! hdrctr.hdrvars.authenticated)"><i class="fa fa-sign-in"></i>Login</a>						
+						<a class="register_link" href="javascript:void(0)" ng-if="(! hdrctr.hdrvars.authenticated)"><i class="fa fa-user-plus"></i>Register</a>
+					</div>
+				</div>    
+			</div>    
+		</header>
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="system/assets/js/bootstrap.min.js"></script>
+		<script>
+			function clearContents(element) {
+			 element.value = '';
+			}
+		</script>
