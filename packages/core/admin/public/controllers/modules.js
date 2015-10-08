@@ -8,12 +8,12 @@ angular.module('mean.admin').controller('ModulesController', ['$scope', 'Global'
 	    $scope.modules = [];
 
 	    vm.init = function() {
-		    Menus.query({
+		    /*Menus.query({
 			    name: 'modules',
 			    defaultMenu: []
 		    }, function(menu) {
 			    vm.modules = menu;
-		    });
+		    });*/
 	    };
     }
 ]);

@@ -1,9 +1,15 @@
 @media(min-width:1200px) and (max-width:1400px){
-.replay-again input{ width:80%;}
+.reply-again input{ width:80%;}
 }
 
+@media(min-width:1025px) {
+.container{width: 100%;}
+
+}
+
+
 @media(min-width:1025px) and (max-width:1199px){
-.replay-again input{ width:70%;}
+.reply-again input{ width:70%;}
 
 }
 
@@ -15,7 +21,11 @@
 .logo > a { display: block; height: 100%; padding:3px 0 0; vertical-align: bottom;}
 .comment-list-left { width: 10%;}
 .comment-list-right {width: 90%;}
-.replay-again input{ width:70%;}
+.reply-again input{ width:70%;}
+.comment-reply .comment-here { float: right; width: 86%;}
+.comment-list-right.sub-comment-css { width: 86%;}
+
+
 }
 
 @media(min-width:768px) and (max-width:991px){
@@ -23,14 +33,15 @@
 .comment-list-left { width: 15%;}
 .comment-list-right {width: 85%;}
 
-.comment-replay .comment-list-left {width: 20%;}
-.comment-replay .comment-here { width:80%;} 
-.replay-again input{ width:70%;}
+.comment-reply .comment-list-left {width: 20%;}
+.comment-reply .comment-here { width:80%;} 
+.reply-again input{ width:70%;}
 
-.replay-again input { width: 100%; margin:0 0 10px;}
-.replay-again{ background:none;}
-.replay-again i{ float:left;}
-.replay-again button{ border-radius:2px; -webkit-border-radius:2px; -moz-border-radius:2px; -ms-border-radius:2px; }
+.reply-again input { width: 100%; margin:0 0 10px;}
+.reply-again{ background:none;}
+.reply-again i{ float:left;}
+.reply-again button{ border-radius:2px; -webkit-border-radius:2px; -moz-border-radius:2px; -ms-border-radius:2px; }
+.comment-list-right.sub-comment-css { width: 80%;}
 
 }
 
@@ -52,8 +63,8 @@ header { height: auto;}
 .comment-list-left { float: none; margin: 0 0 20px; width: 100%;}
 .comment-list-right { float: none;  width: 100%;}
 
-.comment-replay { width: 90%; float:right;}
-.comment-replay .comment-here { float: right; width: 100%;}
+.comment-reply { width: 90%; float:right;}
+.comment-reply .comment-here { float: right; width: 100%;}
 
 .comment-part { padding: 20px;}
 .comment-here {  padding: 15px;}
@@ -61,10 +72,12 @@ header { height: auto;}
 .comment-bottom span a { font-size: 12px;}
 
 
-.replay-again input { width: 100%; margin:0 0 10px;}
-.replay-again{ background:none;}
-.replay-again i {float: none; line-height: 26px; padding: 0;}
-.replay-again button{ border-radius:2px; -webkit-border-radius:2px; -moz-border-radius:2px; -ms-border-radius:2px; }
-.replay-again a{ background: none repeat scroll 0 0 #FFFFFF; border: 1px solid #DEE2EA; border-radius: 2px 2px 2px 2px; float: left; height: 28px; text-align: center; width: 28px;}
+.reply-again input { width: 100%; margin:0 0 10px;}
+.reply-again{ background:none;}
+.reply-again i {float: none; line-height: 26px; padding: 0;}
+.reply-again button{ border-radius:2px; -webkit-border-radius:2px; -moz-border-radius:2px; -ms-border-radius:2px; }
+.reply-again a{ background: none repeat scroll 0 0 #FFFFFF; border: 1px solid #DEE2EA; border-radius: 2px 2px 2px 2px; float: left; height: 28px; text-align: center; width: 28px;}
+.comment-list-right.sub-comment-css { width: 100%;}
+
 
 }

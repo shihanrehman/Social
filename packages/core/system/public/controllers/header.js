@@ -27,14 +27,14 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
     }
 
     // Query server for menus and check permissions
-    queryMenu('main', defaultMainMenu);
-    queryMenu('account', []);
+    // queryMenu('main', defaultMainMenu);
+    // queryMenu('account', []);
 
 
     $scope.isCollapsed = false;
 
     $rootScope.$on('loggedin', function() {
-      queryMenu('main', defaultMainMenu);
+      // queryMenu('main', defaultMainMenu);
 
       vm.hdrvars = {
         authenticated: MeanUser.loggedin,
@@ -53,7 +53,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
         user: {},
         isAdmin: false
       };
-      queryMenu('main', defaultMainMenu);
+      // queryMenu('main', defaultMainMenu);
       $state.go('home');
     });
 

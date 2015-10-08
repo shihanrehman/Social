@@ -20,15 +20,14 @@ var ReplySchema = new Schema({
     trim: true
   },  
   post_id: {
-    type: Number,
+    type: String,
     required: true,
     trim: true
   },
   parent_comment_id: {
-    type: Number,
+    type: String,
     required: true,
-    trim: true,
-	default: 0
+    trim: true
   },
   user: {
     type: Schema.ObjectId,

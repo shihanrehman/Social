@@ -39,7 +39,8 @@ angular.module('mean.users')
       };
 
       $rootScope.$on('loginfailed', function(){
-        vm.loginError = MeanUser.loginError;
+        $(document).find('#loginModal').modal('show');
+		vm.loginError = MeanUser.loginError;
       });
 
       // Register the login() function
@@ -111,5 +112,13 @@ angular.module('mean.users')
       vm.resetpassword = function() {
         MeanUser.resetpassword(this.user);
       };
+    }
+  ])
+  .controller('AllUserCtrl', ['MeanUser', '$rootScope',
+    function(MeanUser, $rootScope) {
+		var vm = this;
+		vm.all_user = function() {
+			vm.all_users = MeanUser.all_user();
+		};
     }
   ]);

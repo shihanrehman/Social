@@ -7,9 +7,20 @@ module.exports = function(Post, app, auth, database) {
 
 	app.route('/api/post/add')
 		.post(auth.requiresLogin, post.add);
+		
+	app.route('/api/post/addReply')
+		.post(auth.requiresLogin, post.addReply);
 	
 	app.route('/api/post/getall')
 		.get(post.getall);
+	app.route('/api/post/getAllReply/:postId')
+		.get(post.getAllReply);
+	app.route('/api/post/getPostDetail/:postId')
+		.get(post.getPostDetail);
+	app.route('/api/post/deletePost/:postId')
+		.get(post.deletePost);
+	app.route('/api/post/deleteReply/:replyId')
+		.get(post.deleteReply);
 
   app.get('/api/post/example/anyone', function(req, res, next) {
     res.send('Anyone can access this');
