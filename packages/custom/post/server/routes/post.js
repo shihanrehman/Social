@@ -7,7 +7,8 @@ module.exports = function(Post, app, auth, database) {
 
 	app.route('/api/post/add')
 		.post(auth.requiresLogin, post.add);
-		
+	app.route('/api/post/edit')
+		.post(auth.requiresLogin, post.edit);
 	app.route('/api/post/addReply')
 		.post(auth.requiresLogin, post.addReply);
 	

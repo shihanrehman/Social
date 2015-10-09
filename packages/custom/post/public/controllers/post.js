@@ -18,6 +18,7 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 	};
 	
 	$scope.posts = {};
+	$scope.postData = {};
     
 	// load all posts records in scope variable.
 	loadData();
@@ -25,13 +26,24 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 	// This function will add new post using textarea.
     $scope.add = function(isValid) {
 		if (isValid) {
-			$http.post('/api/post/add',$scope.post_data).success(function(response) {
-				loadData();
-				$(document).find('#txt_content').val('');
-			}).error(function(data) {
-				console.log(data);
-			});
-		
+			if( $scope.post_data.post_pid == 0 ){
+				$scope.postData.content = $scope.post_data.content;
+				$http.post('/api/post/add',$scope.postData).success(function(response) {
+					loadData();
+					$(document).find('#txt_content').val('');
+				}).error(function(data) {
+					console.log(data);
+				});
+			} else {
+				$scope.postData.content = $scope.post_data.content;
+				$scope.postData._id = $scope.post_data.post_pid;
+				$http.post('/api/post/edit',$scope.postData).success(function(response) {
+					loadData();
+					$(document).find('#txt_content').val('');
+				}).error(function(data) {
+					console.log(data);
+				});
+			}
 		} else {
 			$scope.submitted = true;
 		}
@@ -43,7 +55,13 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 		$scope.reply_data.parent_comment_id = parent_comment_id;
 		$http.post('/api/post/addReply',$scope.reply_data).success(function(response) {
 			loadData();
-			$(document).find('#txt_content').val('');
+			if(parent_comment_id == 0){
+				$(document).find('.comment-reply-div-' + post_id).css('display','inline-block');
+			} else {
+				$(document).find('.comment-reply-div-' + post_id).css('display','inline-block');
+				$(document).find('.sub-comment-div-' + parent_comment_id).css('display','inline-block');
+			}
+			$(document).find('#txt_reply').val('');
 			// $state.go('home');
 		}).error(function(data) {
 			console.log(data);
@@ -51,11 +69,14 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 	};
 	
 	$scope.getPostDetail = function(post_id) {
+		console.log('post_id');
+		console.log(post_id);
 		$.ajax({
 			url : '/api/post/getPostDetail/' + post_id,
 			async : false,
 		})
 		.success(function(post_detail){
+			console.log(post_detail);
 			$scope.post_data.content = post_detail[0].content;
 			$scope.post_data.post_pid = post_detail[0]._id;
 		});
@@ -105,18 +126,14 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 					for(var reply_id in replies){
 						if( replies[reply_id].parent_comment_id != "0" ){
 							response[post_id]['reply'][replies[reply_id].parent_comment_id]['sub_reply'][replies[reply_id]._id] = replies[reply_id];
-							/*console.log('replies[reply_id]._id');
-							console.log(replies[reply_id]._id);
-							console.log('replies[reply_id].parent_comment_id');
-							console.log(replies[reply_id].parent_comment_id);*/
 						} else {
 							response[post_id]['reply'][replies[reply_id]._id] = replies[reply_id];
 							response[post_id]['reply'][replies[reply_id]._id]['sub_reply'] = {};
 						}
 					}
+					response[post_id]['total_reply'] = Object.keys(response[post_id]['reply']).length;
 				}
 			}
-			console.log(response);
 			$scope.posts = response;
 		}
     };

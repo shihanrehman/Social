@@ -66,12 +66,13 @@
 									<div ng-controller="HeaderController as hdrctr">
 										<span ng-if="hdrctr.hdrvars.authenticated"><i class="fa fa-thumbs-o-up"></i> Like </span>
 										<span ng-if="hdrctr.hdrvars.authenticated" class="reply_span"><i class="fa fa-reply"></i> Reply</span>	
-										<a ng-click="getPostDetail(post._id)">
+										<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user" ng-click="getPostDetail(post._id)">
 											<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-pencil-square-o"></i> Edit </span>
 										</a>
 										<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user" ng-click="deletePost(post._id)">
 											<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-trash-o"></i> Delete </span>
 										</a>
+										<span class="view_all_reply" id="view_{{post._id}}" ng-if="post.total_reply > 0" total_reply="{{post.total_reply}}">View {{post.total_reply}} Reply</span>
 									</div>
 									<div class="reply-again">
 										<form name="replyForm" ng-submit="addReply(reply, post._id,0)">
@@ -82,7 +83,7 @@
 									</div>
 								</div>
 							</div>
-							<div class="comment-reply" data-ng-repeat="comment_reply in post.reply">
+							<div class="comment-reply comment-reply-div-{{post._id}}" data-ng-repeat="comment_reply in post.reply">
 								<div class="comment-list-left ">
 									<span> <img src="post/assets/profile_pics/img-02.jpg" alt="Mean Book user" /></span>
 								</div>
@@ -99,6 +100,7 @@
 												<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == comment_reply.user" ng-click="deleteReply(comment_reply._id)">
 													<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-trash-o"></i> Delete </span>
 												</a>
+												<span class="view_all_sub_reply" id="view_sub_reply_{{comment_reply._id}}">View Reply</span>
 											</div>
 											<div class="reply-again" id="reply-again_{{comment_reply._id}}">
 												<form name="replyForm" ng-submit="addReply(reply, post._id,comment_reply._id)">
@@ -110,7 +112,7 @@
 										</div>
 									</div>
 									
-									<div class="sub-comment-reply sub-comment-css-01" data-ng-repeat="sub_comment_reply in comment_reply.sub_reply">
+									<div class="sub-comment-reply sub-comment-div-{{sub_comment_reply.parent_comment_id}}" data-ng-repeat="sub_comment_reply in comment_reply.sub_reply">
 										<div class="comment-list-left">
 											<span> <img src="post/assets/profile_pics/img-02.jpg" alt="Mean Book user" /></span>
 										</div>
@@ -313,6 +315,40 @@
 		$(document).on('click', '.register_link', function(){
 			$('.modal').modal('hide');			
 			$('#registerModal').modal('show');
+		});
+		$(document).on('hidden.bs.modal', '#registerModal, #loginModal', function (e) {
+			console.log('modal close');
+			$(this).find('.modal-body .alert').css('display','none')
+		});
+		$(document).on('click', '.view_all_reply', function (e) {
+			var id= $(this).attr('id');
+			var total_reply = $(this).attr('total_reply');
+			id = id.replace('view_','');
+			if( $(this).text() == 'View ' + total_reply + ' Reply'){
+				$(this).text('Hide Reply');
+			} else {
+				$(this).text('View ' + total_reply + ' Reply');
+			}
+			if( $('.comment-reply-div-' + id).css('display') == "inline-block" ){
+				$('.comment-reply-div-' + id).css('display','none');
+			}
+			else{
+				$('.comment-reply-div-' + id).css('display','inline-block');
+			}
+		});
+		$(document).on('click', '.view_all_sub_reply', function (e) {
+			var id = $(this).attr('id');
+			id = id.replace('view_sub_reply_','');
+			if( $(this).text() == 'View ' + total_reply + ' Reply'){
+				$(this).text('Hide Reply');
+			} else {
+				$(this).text('View ' + total_reply + ' Reply');
+			}
+			if( $('.sub-comment-div-' + id).css('display') == "inline-block" ){
+				$('.sub-comment-div-' + id).css('display','none');
+			}else{
+				$('.sub-comment-div-' + id).css('display','inline-block');
+			}
 		});
 	});
 </script>

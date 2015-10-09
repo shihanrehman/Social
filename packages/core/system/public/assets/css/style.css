@@ -138,7 +138,8 @@ border-radius:100%; -webkit-border-radius:100%; -moz-border-radius:100%; -ms-bor
     text-transform: uppercase;
 }
 
-.comment-reply { display: inline-block; width: 100%; vertical-align: top;}
+.comment-reply { display: none; width: 100%; vertical-align: top;}
 .comment-list-right.sub-comment-css{ width: 90%;}
 .comment-list-right.sub-comment-css > .comment-here { width:100%;}
-.sub-comment-reply.ng-scope { display: inline-block; vertical-align: top;  width: 100%;}
+.sub-comment-reply { display: none; vertical-align: top;  width: 100%;}
+.view_all_reply,.view_all_sub_reply {float: right;}

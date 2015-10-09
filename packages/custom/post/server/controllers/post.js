@@ -13,7 +13,7 @@ module.exports = function(Post) {
 
     return {
         /**
-         * Create an article
+         * Create an Post
          */
         add: function(req, res) {
             var post = new Postm(req.body);
@@ -36,6 +36,23 @@ module.exports = function(Post) {
                 });*/
 
                 res.json(post);
+            });
+        },
+		/**
+         * Update an Post
+         */
+        edit: function(req, res) {
+			var postData = req.body;
+			var postId = postData._id;
+			var postContent = postData.content;
+            
+			Postm.update({ _id: postId },{content: postContent}).exec(function(err, posts) {
+                if (err) {
+                    return res.status(500).json({
+                        error: 'Cannot list the articles'
+                    });
+                }
+                res.json(posts);
             });
         },
 		

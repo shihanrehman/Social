@@ -40,10 +40,14 @@ PostSchema.path('content').validate(function(content) {
 /**
  * Statics
  */
-PostSchema.statics.load = function(id, cb) {
+PostSchema.statics.load = function(cb) {
+  this.find().populate('user', 'name username').exec(cb);
+};
+
+/*PostSchema.statics.load = function(id, cb) {
   this.findOne({
     _id: id
   }).populate('user', 'name username').exec(cb);
-};
+};*/
 
 mongoose.model('Post', PostSchema);
