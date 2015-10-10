@@ -70,20 +70,37 @@ border-radius:100%; -webkit-border-radius:100%; -moz-border-radius:100%; -ms-bor
 .comment-list-left{ width:7%; float:left;}
 .comment-list > li { display: inline-block; vertical-align: top; width: 100%;}
 
-.comment-list-left span{ display:block; width:51px; height:51px; border:1px solid #e0e3eb; border-radius:100%; -moz-border-radius:100%; -ms-border-radius:100%; -webkit-border-radius:100%; overflow:hidden;}
-.comment-list-left span img{border-radius:100%; -moz-border-radius:100%; -ms-border-radius:100%; -webkit-border-radius:100%;}
+.comment-list-left span{ }
+/*.comment-list-left span img{border-radius:100%; -moz-border-radius:100%; -ms-border-radius:100%; -webkit-border-radius:100%;}*/
+.comment-list-left span{
+	border-radius:100%;
+	background-color: #3B589E;
+	display:block;
+    color: #fff;
+	-moz-border-radius:100%;
+  	-ms-border-radius:100%;
+  	-webkit-border-radius:100%;
+	overflow:hidden;
+	border-radius: 100%;
+    font-size: 20px;
+    height: 50px;
+    line-height: 49px;
+    text-align: center;
+    width: 50px;
+    font-weight: bold;
+}
 
 
 .comment-list-right{float:right; width:93%;}
 .comment-here { margin: 0 0 20px; background:#e9eff4; padding:20px;}
-.comment-here p{ color:#65686d; font-size:16px; line-height:28px; padding:0 0 20px; font-weight:400; }
+/*.comment-here p{ color:#65686d; font-size:16px; line-height:28px; padding:0 0 20px; font-weight:400; }*/
 .comment-bottom{ display:block; text-align:left; line-height: normal;}
 .comment-bottom span{ margin:0 22px 0 0;}
 .comment-bottom span{ color:#82868d; cursor: pointer; font-size:14px; }
 .comment-bottom span a { color: #82868d; font-size: 14px;}
 .comment-bottom span a:hover{ color:#3b589e;}
 
-.comment-reply { display: inline-block; width: 100%;}
+.comment-reply { display: none; width: 100%;}
 .comment-reply .comment-here{float:right; width:90%;}
 .comment-reply .comment-list-left{ width:10%;}
 .comment-reply .comment-list-left span{ margin:0 auto;} 
@@ -137,7 +154,19 @@ border-radius:100%; -webkit-border-radius:100%; -moz-border-radius:100%; -ms-bor
     margin: 0;
     text-transform: uppercase;
 }
-
+.author_name{
+	color: #3B589E;
+	font-size: 16px;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+.post_content{
+	color:#65686d;
+	font-size:16px;
+	line-height:28px;
+	padding:0 0 20px;
+	font-weight:400; }
+}
 .comment-reply { display: none; width: 100%; vertical-align: top;}
 .comment-list-right.sub-comment-css{ width: 90%;}
 .comment-list-right.sub-comment-css > .comment-here { width:100%;}

@@ -57,20 +57,21 @@
 				<ul class="comment-list">
 					<li data-ng-repeat="post in posts">
 						<div class="comment-list-left">
-							<span> <img src="post/assets/profile_pics/img-01.jpg" alt="Mean Book user" /></span>
+							<span>{{post.user.display_name}}</span>
 						</div>
 						<div class="comment-list-right">
 							<div class="comment-here">
-								<p id="post_content_{{post._id}}">{{post.content}}</p>
+								<p class="author_name">{{post.user.name}}</p>
+								<p class="post_content" id="post_content_{{post._id}}">{{post.content}}</p>
 								<div class="comment-bottom">	
 									<div ng-controller="HeaderController as hdrctr">
 										<span ng-if="hdrctr.hdrvars.authenticated"><i class="fa fa-thumbs-o-up"></i> Like </span>
 										<span ng-if="hdrctr.hdrvars.authenticated" class="reply_span"><i class="fa fa-reply"></i> Reply</span>	
-										<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user" ng-click="getPostDetail(post._id)">
-											<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-pencil-square-o"></i> Edit </span>
+										<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user._id" ng-click="getPostDetail(post._id)">
+											<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user._id"><i class="fa fa-pencil-square-o"></i> Edit </span>
 										</a>
-										<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user" ng-click="deletePost(post._id)">
-											<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-trash-o"></i> Delete </span>
+										<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user._id" ng-click="deletePost(post._id)">
+											<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user._id"><i class="fa fa-trash-o"></i> Delete </span>
 										</a>
 										<span class="view_all_reply" id="view_{{post._id}}" ng-if="post.total_reply > 0" total_reply="{{post.total_reply}}">View {{post.total_reply}} Reply</span>
 									</div>
@@ -85,22 +86,23 @@
 							</div>
 							<div class="comment-reply comment-reply-div-{{post._id}}" data-ng-repeat="comment_reply in post.reply">
 								<div class="comment-list-left ">
-									<span> <img src="post/assets/profile_pics/img-02.jpg" alt="Mean Book user" /></span>
+									<span>{{comment_reply.user.display_name}}</span>
 								</div>
 								<div class="comment-list-right sub-comment-css">
 									<div class="comment-here">
-										<p>{{comment_reply.content}}</p>
+										<p class="author_name">{{comment_reply.user.name}}</p>
+										<p class="post_content">{{comment_reply.content}}</p>
 										<div class="comment-bottom">
 											<div ng-controller="HeaderController as hdrctr">
 												<span ng-if="hdrctr.hdrvars.authenticated"><a href=""> <i class="fa fa-thumbs-o-up"></i> Like </a></span>
 												<span ng-if="hdrctr.hdrvars.authenticated" class="reply_span"> <i class="fa fa-reply"></i> Reply </span>
 												<a ng-click="getPostDetail(post._id)">
-													<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-pencil-square-o"></i> Edit </span>
+													<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == comment_reply.user._id"><i class="fa fa-pencil-square-o"></i> Edit </span>
 												</a>
-												<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == comment_reply.user" ng-click="deleteReply(comment_reply._id)">
-													<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-trash-o"></i> Delete </span>
+												<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == comment_reply.user._id" ng-click="deleteReply(comment_reply._id)">
+													<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == comment_reply.user._id"><i class="fa fa-trash-o"></i> Delete </span>
 												</a>
-												<span class="view_all_sub_reply" id="view_sub_reply_{{comment_reply._id}}">View Reply</span>
+												<span class="view_all_sub_reply" id="view_sub_reply_{{comment_reply._id}}" ng-if="comment_reply.total_sub_reply > 0" total_sub_reply="{{comment_reply.total_sub_reply}}">View {{comment_reply.total_sub_reply}} Sub Reply</span>
 											</div>
 											<div class="reply-again" id="reply-again_{{comment_reply._id}}">
 												<form name="replyForm" ng-submit="addReply(reply, post._id,comment_reply._id)">
@@ -114,19 +116,21 @@
 									
 									<div class="sub-comment-reply sub-comment-div-{{sub_comment_reply.parent_comment_id}}" data-ng-repeat="sub_comment_reply in comment_reply.sub_reply">
 										<div class="comment-list-left">
-											<span> <img src="post/assets/profile_pics/img-02.jpg" alt="Mean Book user" /></span>
+											<span>{{sub_comment_reply.user.display_name}}</span>
+											<!-- <span> <img src="post/assets/profile_pics/img-02.jpg" alt="Mean Book user" /></span> -->
 										</div>
 										<div class="comment-here">
-											<p>{{sub_comment_reply.content}}</p>
+											<p class="author_name">{{sub_comment_reply.user.name}}</p>
+											<p class="post_content">{{sub_comment_reply.content}}</p>
 											<div class="comment-bottom">
 												<div ng-controller="HeaderController as hdrctr">
 													<span ng-if="hdrctr.hdrvars.authenticated"><i class="fa fa-thumbs-o-up"></i> Like </span>
 													<span ng-if="hdrctr.hdrvars.authenticated" id="sub-reply-link_{{sub_comment_reply.parent_comment_id}}" class="sub-reply-link"><i class="fa fa-reply"></i> Reply </span>
 													<a ng-click="getPostDetail(post._id)">
-														<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-pencil-square-o"></i> Edit </span>
+														<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == sub_comment_reply.user._id"><i class="fa fa-pencil-square-o"></i> Edit </span>
 													</a>
-													<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == sub_comment_reply.user" ng-click="deleteReply(sub_comment_reply._id)">
-														<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user"><i class="fa fa-trash-o"></i> Delete </span>
+													<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == sub_comment_reply.user._id" ng-click="deleteReply(sub_comment_reply._id)">
+														<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == sub_comment_reply.user._id"><i class="fa fa-trash-o"></i> Delete </span>
 													</a>
 												</div>
 											</div>
@@ -338,11 +342,12 @@
 		});
 		$(document).on('click', '.view_all_sub_reply', function (e) {
 			var id = $(this).attr('id');
+			var total_sub_reply = $(this).attr('total_sub_reply');
 			id = id.replace('view_sub_reply_','');
-			if( $(this).text() == 'View ' + total_reply + ' Reply'){
-				$(this).text('Hide Reply');
+			if( $(this).text() == 'View ' + total_sub_reply + ' Sub Reply'){
+				$(this).text('Hide Sub Reply');
 			} else {
-				$(this).text('View ' + total_reply + ' Reply');
+				$(this).text('View ' + total_sub_reply + ' Sub Reply');
 			}
 			if( $('.sub-comment-div-' + id).css('display') == "inline-block" ){
 				$('.sub-comment-div-' + id).css('display','none');

@@ -116,7 +116,7 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 		client.send();
 		if( client.status == 200 ){
 			var response = JSON.parse(client.response);
-			for(var post_id in response){
+			for(var post_id in response){				
 				response[post_id]['reply'] = {};
 				var reply_client = new XMLHttpRequest();
 				reply_client.open("GET", '/api/post/getAllReply/' + response[post_id]._id, false);
@@ -124,16 +124,37 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 				if( reply_client.status == 200 ){
 					var replies = JSON.parse(reply_client.response);
 					for(var reply_id in replies){
+						var reply_user_name = replies[reply_id]['user']['name'];
+						reply_user_name = reply_user_name.replace(/\s+/g,' ').split(' ');
+						var display_reply_user_name = '';
+						for(var name_index in reply_user_name){
+							if(name_index < 3){
+								display_reply_user_name = display_reply_user_name + reply_user_name[name_index].charAt(0).toUpperCase();
+							}
+						}
+						replies[reply_id]['user']['display_name'] = display_reply_user_name;
 						if( replies[reply_id].parent_comment_id != "0" ){
 							response[post_id]['reply'][replies[reply_id].parent_comment_id]['sub_reply'][replies[reply_id]._id] = replies[reply_id];
+							response[post_id]['reply'][replies[reply_id].parent_comment_id]['total_sub_reply']++;
 						} else {
 							response[post_id]['reply'][replies[reply_id]._id] = replies[reply_id];
 							response[post_id]['reply'][replies[reply_id]._id]['sub_reply'] = {};
+							response[post_id]['reply'][replies[reply_id]._id]['total_sub_reply'] = 0;
 						}
 					}
 					response[post_id]['total_reply'] = Object.keys(response[post_id]['reply']).length;
 				}
+				var user_name = response[post_id]['user']['name'];
+				user_name = user_name.replace(/\s+/g,' ').split(' ');
+				var display_user_name = '';
+				for(var name_index in user_name){
+					if(name_index < 3){
+						display_user_name = display_user_name + user_name[name_index].charAt(0).toUpperCase();
+					}
+				}
+				response[post_id]['user']['display_name'] = display_user_name;
 			}
+			console.log(response);
 			$scope.posts = response;
 		}
     };

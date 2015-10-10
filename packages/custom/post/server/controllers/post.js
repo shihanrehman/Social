@@ -129,7 +129,7 @@ module.exports = function(Post) {
          */
         getall: function(req, res) {
 			// Postm.find().sort('-created').populate('user', 'name username').exec(function(err, posts) {
-			Postm.find().sort('-created').exec(function(err, posts) {
+			Postm.find().sort('-created').populate('user', 'name username').exec(function(err, posts) {
                 if (err) {
                     return res.status(500).json({
                         error: 'Cannot list the articles'
@@ -144,7 +144,7 @@ module.exports = function(Post) {
          */
         getAllReply: function(req, res) {
 			// Replym.find({ post_id: req.params.postId }).sort('-created').exec(function(err, replies) {
-			Replym.find({ post_id: req.params.postId }).exec(function(err, replies) {
+			Replym.find({ post_id: req.params.postId }).populate('user', 'name username').exec(function(err, replies) {
                 if (err) {
                     return res.status(500).json({
                         error: 'Cannot list the replies'
