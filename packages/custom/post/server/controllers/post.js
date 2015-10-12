@@ -6,6 +6,8 @@
 var mongoose = require('mongoose'),
     Postm = mongoose.model('Post'),
     Replym = mongoose.model('Reply'),
+    Likem = mongoose.model('Like'),
+    Userm = mongoose.model('User'),
     config = require('meanio').loadConfig(),
     _ = require('lodash');
 
@@ -69,19 +71,25 @@ module.exports = function(Post) {
                         error: 'Cannot save the post'
                     });
                 }
-
-                /*Articles.events.publish({
-                    action: 'created',
-                    user: {
-                        name: req.user.name
-                    },
-                    url: config.hostname + '/articles/' + article._id,
-                    name: article.title
-                });*/
                 res.json(reply);
             });
         },
-		
+		/**
+         * Set like
+         */
+        setLike: function(req, res) {
+            var like = new Likem(req.body);
+            like.user = req.user;
+
+            like.save(function(err) {
+                if (err) {
+                    return res.status(500).json({
+                        error: 'Cannot save the post'
+                    });
+                }
+                res.json(like);
+            });
+        },
         /**
          * Update an article
          */
@@ -128,7 +136,6 @@ module.exports = function(Post) {
          * returns List of Posts
          */
         getall: function(req, res) {
-			// Postm.find().sort('-created').populate('user', 'name username').exec(function(err, posts) {
 			Postm.find().sort('-created').populate('user', 'name username').exec(function(err, posts) {
                 if (err) {
                     return res.status(500).json({
@@ -138,12 +145,24 @@ module.exports = function(Post) {
                 res.json(posts);
             });
         },
+		/**
+         * returns List of Users
+         */
+        getAllUsers: function(req, res) {
+			Userm.find().exec(function(err, users) {
+                if (err) {
+                    return res.status(500).json({
+                        error: 'Cannot list the articles'
+                    });
+                }
+                res.json(users);
+            });
+        },
 		
 		/**
          * returns List of all Reply
          */
         getAllReply: function(req, res) {
-			// Replym.find({ post_id: req.params.postId }).sort('-created').exec(function(err, replies) {
 			Replym.find({ post_id: req.params.postId }).populate('user', 'name username').exec(function(err, replies) {
                 if (err) {
                     return res.status(500).json({
@@ -170,14 +189,21 @@ module.exports = function(Post) {
          * delete a Post
          */
 		deletePost: function(req, res) {
-			Postm.remove({ _id: req.params.postId }).exec(function(err, posts) {
-                if (err) {
-                    return res.status(500).json({
-                        error: 'Cannot list the replies'
-                    });
-                }
-                res.json(posts);
-            });
+			Replym.remove({ post_id: req.params.postId }).exec(function(err, replies) {
+				if (err) {
+					return res.status(500).json({
+						error: 'Cannot list the replies'
+					});
+				}
+				Postm.remove({ _id: req.params.postId }).exec(function(err, posts) {
+					if (err) {
+						return res.status(500).json({
+							error: 'Cannot list the replies'
+						});
+					}
+					res.json(posts);
+				});
+			});
         },
 		/**
          * delete a reply

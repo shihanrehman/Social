@@ -11,9 +11,13 @@ module.exports = function(Post, app, auth, database) {
 		.post(auth.requiresLogin, post.edit);
 	app.route('/api/post/addReply')
 		.post(auth.requiresLogin, post.addReply);
+	app.route('/api/post/setLike')
+		.post(auth.requiresLogin, post.setLike);
 	
 	app.route('/api/post/getall')
 		.get(post.getall);
+	app.route('/api/post/getAllUsers')
+		.get(post.getAllUsers);
 	app.route('/api/post/getAllReply/:postId')
 		.get(post.getAllReply);
 	app.route('/api/post/getPostDetail/:postId')
