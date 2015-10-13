@@ -1,10 +1,8 @@
 'use strict';
 
-/* jshint -W098 */
-angular.module('mean.post').controller('PostController', ['$scope', '$stateParams', '$location', 'Global', '$http', 'Post', '$state', function($scope, $stateParams, $location, Global, $http, Post, $state) {
+angular.module('mean.post').controller('PostController', ['$scope', '$stateParams', '$location', 'Global', 'Post', 'MeanUser', 'Circles', '$http', function($scope, $stateParams, $location, Global, Post, MeanUser, Circles, $http ) {
     $scope.global = Global;
-	
-    $scope.package = {
+	$scope.package = {
       name: 'post'
     };
 	
@@ -77,7 +75,6 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 			is_post: is_post
 		};
 		$http.post('/api/post/setLike',likeData).success(function(response) {
-			console.log('hello');
 			loadPostData();
 		}).error(function(data) {
 			console.log(data);
@@ -123,13 +120,21 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 	};
 	// Function to load post and reply detail each time when any operation perform.
 	function loadPostData() {
+		/*$.ajax({
+			url : '/api/users/me',
+			async : true,
+		})
+		.success(function(user_detail){
+			console.log(user_detail);
+		});*/
 		var replies = '';
 		var client = new XMLHttpRequest();
 		client.open("GET", "/api/post/getall/", false);
 		client.send();
 		if( client.status == 200 ){
 			var response = JSON.parse(client.response);
-			for(var post_id in response){				
+			for(var post_id in response){
+				response[post_id]['totalLikes'] = getTotalLikes(response[post_id]._id);
 				response[post_id]['reply'] = {};
 				var reply_client = new XMLHttpRequest();
 				reply_client.open("GET", '/api/post/getAllReply/' + response[post_id]._id, false);
@@ -146,6 +151,7 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 							}
 						}
 						replies[reply_id]['user']['display_name'] = display_reply_user_name;
+						replies[reply_id]['totalLikes'] = getTotalLikes(replies[reply_id]._id);
 						if( replies[reply_id].parent_comment_id != "0" ){
 							response[post_id]['reply'][replies[reply_id].parent_comment_id]['sub_reply'][replies[reply_id]._id] = replies[reply_id];
 							response[post_id]['reply'][replies[reply_id].parent_comment_id]['total_sub_reply']++;
@@ -171,7 +177,14 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 			$scope.posts = response;
 		}
     };
-	
+	function getTotalLikes(content_id){
+		var like_client = new XMLHttpRequest();
+		like_client.open("GET", '/api/post/getTotalLikes/' + content_id, false);
+		like_client.send();
+		if( like_client.status == 200 ){
+			return like_client.response;
+		}
+	}
 	// Function to load all users on left sidebar.
 	function loadAllUsers() {
 		var getUsers = new XMLHttpRequest();
@@ -197,6 +210,12 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 			$scope.users_list = response;
 		}
 	};
+	
+	function userLoggedIn(){
+		$http.get('/api/users/me').success(function(response) {
+			console.log(response);
+		});
+	}
 		
 	}
 

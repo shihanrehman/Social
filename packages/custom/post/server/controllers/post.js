@@ -142,9 +142,10 @@ module.exports = function(Post) {
                         error: 'Cannot list the articles'
                     });
                 }
-                res.json(posts);
-            });
-        },
+				var list_posts = posts;
+				res.json(list_posts);
+			});
+		},
 		/**
          * returns List of Users
          */
@@ -171,6 +172,20 @@ module.exports = function(Post) {
                 }
                 res.json(replies);
             });
+        },
+		/**
+         * returns total no. of likes
+         */
+        getTotalLikes: function(req, res) {
+			Likem.count({content_id: req.params.postId}).exec(function(err, totalLikes) {
+				if (err) {
+                    return res.status(500).json({
+                        error: 'Cannot list the replies'
+                    });
+                }
+				
+				res.json(totalLikes);
+			});
         },
 		/**
          * returns detail of Post
