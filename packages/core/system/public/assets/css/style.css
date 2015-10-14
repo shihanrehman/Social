@@ -124,6 +124,7 @@ header { color:#394356; font-size:14px; background:#fff; width:100%; display:inl
 .comment-bottom{ display:inline-block; text-align:left; line-height: normal;width: 100%;}
 .comment-bottom span{ margin:0 22px 0 0;}
 .comment-bottom span{ color:#82868d; cursor: pointer; font-size:14px; }
+.comment-bottom span.isLiked{ color:#3b589e;}
 .comment-bottom span a { color: #82868d; font-size: 14px;}
 .comment-bottom span:hover{ color:#3b589e;}
 .comment-bottom span a:hover{ color:#3b589e;}

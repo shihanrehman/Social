@@ -22,8 +22,10 @@ module.exports = function(Post, app, auth, database) {
 		.get(post.getAllReply);
 	app.route('/api/post/getPostDetail/:postId')
 		.get(post.getPostDetail);
-	app.route('/api/post/getTotalLikes/:postId')
+	app.route('/api/post/getTotalLikes/:postId/:userId')
 		.get(post.getTotalLikes);
+	app.route('/api/post/unsetLike/:likeId')
+		.get(post.unsetLike);
 		
 		
 	app.route('/api/post/deletePost/:postId')

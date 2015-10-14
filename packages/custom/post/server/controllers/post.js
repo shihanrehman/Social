@@ -8,6 +8,7 @@ var mongoose = require('mongoose'),
     Replym = mongoose.model('Reply'),
     Likem = mongoose.model('Like'),
     Userm = mongoose.model('User'),
+	async = require('async'),
     config = require('meanio').loadConfig(),
     _ = require('lodash');
 
@@ -136,6 +137,38 @@ module.exports = function(Post) {
          * returns List of Posts
          */
         getall: function(req, res) {
+			
+			/*Postm.find().sort('-created').populate('user', 'name username').exec(function(err, posts) {
+				if (err) {
+					return res.status(500).json({
+						error: 'Cannot list the articles'
+					});
+				}
+				var list_posts = posts;
+				for(var postId in list_posts){
+					async.waterfall([
+						function (callback) {
+							Replym.find({ post_id: list_posts[postId]._id }).populate('user', 'name username').exec(function(err, replies) {
+								if (err) {
+									return res.status(500).json({
+										error: 'Cannot list the replies'
+									});
+								}
+								callback(null, replies)
+							});
+						},
+						function (replies, callback) {
+							list_posts[postId]['reply'] = replies;
+						}
+					], function (err, result) {
+						console.log('Main Callback --> ' + result);
+					});
+				}
+				console.log(list_posts)
+				// res.json(list_posts);
+			});
+				
+			return 0;*/
 			Postm.find().sort('-created').populate('user', 'name username').exec(function(err, posts) {
                 if (err) {
                     return res.status(500).json({
@@ -183,8 +216,29 @@ module.exports = function(Post) {
                         error: 'Cannot list the replies'
                     });
                 }
-				
-				res.json(totalLikes);
+				async.waterfall([
+					function (callback) {
+						Likem.findOne({content_id: req.params.postId, user:req.params.userId}).exec(function(err, isLike) {
+							if (err) {
+								return res.status(500).json({
+									error: 'Cannot list the replies'
+								});
+							}
+							var isLiked = 0;
+							if(isLike){
+								var isLiked = isLike.id;
+							}
+							var likeData = {
+								totalLikes : totalLikes,
+								isLike : isLiked
+							};
+							res.json(likeData);
+						});
+					}
+				], function (err, result) {
+					console.log('Main Callback --> ' + result);
+				});
+				// res.json(totalLikes);
 			});
         },
 		/**
@@ -224,7 +278,20 @@ module.exports = function(Post) {
          * delete a reply
          */
 		deleteReply: function(req, res) {
-			Replym.remove({ _id: req.params.replyId }).exec(function(err, replies) {
+			Replym.remove({ $or: [ { _id: req.params.replyId }, { parent_comment_id: req.params.replyId } ] }).exec(function(err, replies) {
+                if (err) {
+                    return res.status(500).json({
+                        error: 'Cannot list the replies'
+                    });
+                }
+                res.json(replies);
+            });
+        },
+		/**
+         * unset Like
+         */
+		unsetLike: function(req, res) {
+			Likem.remove({ _id: req.params.likeId }).exec(function(err, replies) {
                 if (err) {
                     return res.status(500).json({
                         error: 'Cannot list the replies'

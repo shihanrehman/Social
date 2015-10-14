@@ -5,7 +5,7 @@
  -->
 <script type="text-javascript" src="/post/assets/js/ng-file-upload.min.js"></script>
 <script type="text-javascript" src="/post/assets/js/ng-file-upload-shim.min.js"></script>
-<section id="content" data-ng-controller="PostController">
+<section id="content">
   	<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
     	<div class="left-side">
         	<div class="user-panel">
@@ -22,8 +22,7 @@
             </div>
         </div>
 	</div>
-     
-     <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12 div_post">
+	<div class="col-lg-9 col-md-9 col-sm-8 col-xs-12 div_post">
      	<div class="spacing">
 			<div class="news-feed">
 
@@ -63,7 +62,8 @@
 								<p class="post_content" id="post_content_{{post._id}}">{{post.content}}</p>
 								<div class="comment-bottom">	
 									<div ng-controller="HeaderController as hdrctr">
-										<span ng-if="hdrctr.hdrvars.authenticated" ng-click="setLike(post._id,1)"><i class="fa fa-thumbs-o-up"></i> {{post.totalLikes}} Like </span>
+										<span ng-if="hdrctr.hdrvars.authenticated && post.isLike == 0" ng-click="setLike(post._id,1)"><i class="fa fa-thumbs-o-up"></i> {{post.totalLikes}} Like </span>
+										<span ng-if="hdrctr.hdrvars.authenticated && post.isLike != 0" class="isLiked" ng-click="unsetLike(post.isLike)"><i class="fa fa-thumbs-up"></i> {{post.totalLikes}} Like </span>
 										<span ng-if="hdrctr.hdrvars.authenticated" class="reply_span"><i class="fa fa-reply"></i> Reply</span>	
 										<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user._id" ng-click="getPostDetail(post._id)"><i class="fa fa-pencil-square-o"></i> Edit </span>
 										<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == post.user._id" class="deletePost" ng-click="deletePost(post._id)"><i class="fa fa-trash-o"></i> Delete </span>
@@ -90,9 +90,9 @@
 											<div ng-controller="HeaderController as hdrctr">
 												<span ng-if="hdrctr.hdrvars.authenticated"><a href=""> <i class="fa fa-thumbs-o-up"></i> {{comment_reply.totalLikes}} Like </a></span>
 												<span ng-if="hdrctr.hdrvars.authenticated" class="reply_span"> <i class="fa fa-reply"></i> Reply </span>
-												<a ng-click="getPostDetail(post._id)">
+												<!-- <a ng-click="getPostDetail(post._id)">
 													<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == comment_reply.user._id"><i class="fa fa-pencil-square-o"></i> Edit </span>
-												</a>
+												</a> -->
 												<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == comment_reply.user._id" ng-click="deleteReply(comment_reply._id)">
 													<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == comment_reply.user._id"><i class="fa fa-trash-o"></i> Delete </span>
 												</a>
@@ -120,9 +120,9 @@
 												<div ng-controller="HeaderController as hdrctr">
 													<span ng-if="hdrctr.hdrvars.authenticated"><i class="fa fa-thumbs-o-up"></i> {{sub_comment_reply.totalLikes}} Like </span>
 													<span ng-if="hdrctr.hdrvars.authenticated" id="sub-reply-link_{{sub_comment_reply.parent_comment_id}}" class="sub-reply-link"><i class="fa fa-reply"></i> Reply </span>
-													<a ng-click="getPostDetail(post._id)">
+													<!-- <a ng-click="getPostDetail(post._id)">
 														<span class="edit_post" id="edit_post_{{post._id}}" ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == sub_comment_reply.user._id"><i class="fa fa-pencil-square-o"></i> Edit </span>
-													</a>
+													</a> -->
 													<a ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == sub_comment_reply.user._id" ng-click="deleteReply(sub_comment_reply._id)">
 														<span ng-if="hdrctr.hdrvars.authenticated && hdrctr.hdrvars.user._id == sub_comment_reply.user._id"><i class="fa fa-trash-o"></i> Delete </span>
 													</a>
@@ -369,3 +369,5 @@
 		});
 	});
 </script>
+</body>
+</html>

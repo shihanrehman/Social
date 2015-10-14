@@ -22,11 +22,11 @@
 		<link href="system/assets/css/style.css" rel="stylesheet">
 		<link href="system/assets/css/responsive.css" rel="stylesheet">
 	</head>
-	<body>
+	<body data-ng-controller="PostController">
 		<header>
 			<div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
 				<div class="left-side">
-					<h1 class="logo"> <a href="/"><img src="system/assets/img/logo.png" alt="" /></a> </h1>
+					<h1 class="logo"> <a ng-click="loadPostData()"><img src="system/assets/img/logo.png" alt="" /></a> </h1>
 				</div>
 			</div>
 			<div class="col-lg-9 col-md-9 col-sm-8 col-xs-12" ng-controller="HeaderController as hdrctr">

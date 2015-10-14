@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.post').controller('PostController', ['$scope', '$stateParams', '$location', 'Global', 'Post', 'MeanUser', 'Circles', '$http', function($scope, $stateParams, $location, Global, Post, MeanUser, Circles, $http ) {
+angular.module('mean.post').controller('PostController', ['$scope', '$rootScope', '$stateParams', '$location', 'Global', 'Post', 'MeanUser', 'Circles', '$http', '$q', function($scope, $rootScope, $stateParams, $location, Global, Post, MeanUser, Circles, $http, $q ) {
     $scope.global = Global;
 	$scope.package = {
       name: 'post'
@@ -16,6 +16,7 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 	};
 	
 	$scope.posts = {};
+	$scope.userDetail = {};
 	$scope.users_list = {};
 	$scope.postData = {};
     
@@ -81,17 +82,29 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 		});
 	};
 	
-	$scope.getPostDetail = function(post_id) {
-		$.ajax({
-			url : '/api/post/getPostDetail/' + post_id,
-			async : false,
-		})
-		.success(function(post_detail){
-			$scope.post_data.content = post_detail[0].content;
-			$scope.post_data.post_pid = post_detail[0]._id;
+	// This function will set like for particular post or reply.
+	$scope.unsetLike = function(likeId) {
+		$http.get('/api/post/unsetLike/' + likeId ).success(function(response) {
+			loadPostData();
+		}).error(function(data) {
+			console.log(data);
 		});
 	};
 	
+	$scope.getPostDetail = function(post_id) {
+		$http.get('/api/post/getPostDetail/' + post_id ).success(function(post_detail) {
+			$scope.post_data.content = post_detail[0].content;
+			$scope.post_data.post_pid = post_detail[0]._id;
+		}).error(function(data) {
+			console.log(data);
+		});
+	};
+	$scope.loadPostData = function(post_id) {
+		// load all posts records in scope variable.
+		loadPostData();
+		// load all users records in scope variable.
+		loadAllUsers();
+	};
 	$scope.deletePost = function(post_id) {
 		$.ajax({
 			url : '/api/post/deletePost/' + post_id,
@@ -118,71 +131,87 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 		console.log("inputfile", $scope.post_media.$ngfBlobUrl);
 		console.log("inputfile", $scope.post_media.type);
 	};
-	// Function to load post and reply detail each time when any operation perform.
-	function loadPostData() {
-		/*$.ajax({
-			url : '/api/users/me',
-			async : true,
+	
+	function isUserLoggedin() {
+		var deferred = $q.defer();
+		$http.get('/api/users/me').success(function(response) {
+			deferred.resolve(response);
 		})
-		.success(function(user_detail){
-			console.log(user_detail);
-		});*/
-		var replies = '';
-		var client = new XMLHttpRequest();
-		client.open("GET", "/api/post/getall/", false);
-		client.send();
-		if( client.status == 200 ){
-			var response = JSON.parse(client.response);
-			for(var post_id in response){
-				response[post_id]['totalLikes'] = getTotalLikes(response[post_id]._id);
-				response[post_id]['reply'] = {};
-				var reply_client = new XMLHttpRequest();
-				reply_client.open("GET", '/api/post/getAllReply/' + response[post_id]._id, false);
-				reply_client.send();
-				if( reply_client.status == 200 ){
-					var replies = JSON.parse(reply_client.response);
-					for(var reply_id in replies){
-						var reply_user_name = replies[reply_id]['user']['name'];
-						reply_user_name = reply_user_name.trim().replace(/\s+/g,' ').split(' ');
-						var display_reply_user_name = '';
-						for(var name_index in reply_user_name){
-							if(name_index < 3){
-								display_reply_user_name = display_reply_user_name + reply_user_name[name_index].charAt(0).toUpperCase();
+		.error(function(data, status, headers, config)
+		{
+			deferred.reject();
+		});
+		return deferred.promise;
+	};
+	// Function to load post and reply detail each time when any operation perform.
+	function loadPostData() {	
+		isUserLoggedin().then(function(userDetail){
+			var replies = '';
+			var client = new XMLHttpRequest();
+			client.open("GET", "/api/post/getall/", false);
+			client.send();
+			if( client.status == 200 ){
+				var response = JSON.parse(client.response);
+				for(var post_id in response){
+					if( userDetail ){
+						var totalPostLike = getTotalLikes(response[post_id]._id,userDetail._id);
+						response[post_id]['totalLikes'] = totalPostLike.totalLikes;
+						response[post_id]['isLike'] = totalPostLike.isLike;
+					}
+					response[post_id]['reply'] = {};
+					var reply_client = new XMLHttpRequest();
+					reply_client.open("GET", '/api/post/getAllReply/' + response[post_id]._id, false);
+					reply_client.send();
+					if( reply_client.status == 200 ){
+						var replies = JSON.parse(reply_client.response);
+						for(var reply_id in replies){
+							var reply_user_name = replies[reply_id]['user']['name'];
+							reply_user_name = reply_user_name.trim().replace(/\s+/g,' ').split(' ');
+							var display_reply_user_name = '';
+							for(var name_index in reply_user_name){
+								if(name_index < 3){
+									display_reply_user_name = display_reply_user_name + reply_user_name[name_index].charAt(0).toUpperCase();
+								}
+							}
+							replies[reply_id]['user']['display_name'] = display_reply_user_name;
+							if( userDetail ){
+								var totalReplyLike = getTotalLikes(replies[reply_id]._id, userDetail._id);
+								replies[reply_id]['totalLikes'] = totalReplyLike.totalLikes;
+								replies[reply_id]['isLike'] = totalReplyLike.isLike;
+							}
+							if( replies[reply_id].parent_comment_id != "0" ){
+								response[post_id]['reply'][replies[reply_id].parent_comment_id]['sub_reply'][replies[reply_id]._id] = replies[reply_id];
+								response[post_id]['reply'][replies[reply_id].parent_comment_id]['total_sub_reply']++;
+							} else {
+								response[post_id]['reply'][replies[reply_id]._id] = replies[reply_id];
+								response[post_id]['reply'][replies[reply_id]._id]['sub_reply'] = {};
+								response[post_id]['reply'][replies[reply_id]._id]['total_sub_reply'] = 0;
 							}
 						}
-						replies[reply_id]['user']['display_name'] = display_reply_user_name;
-						replies[reply_id]['totalLikes'] = getTotalLikes(replies[reply_id]._id);
-						if( replies[reply_id].parent_comment_id != "0" ){
-							response[post_id]['reply'][replies[reply_id].parent_comment_id]['sub_reply'][replies[reply_id]._id] = replies[reply_id];
-							response[post_id]['reply'][replies[reply_id].parent_comment_id]['total_sub_reply']++;
-						} else {
-							response[post_id]['reply'][replies[reply_id]._id] = replies[reply_id];
-							response[post_id]['reply'][replies[reply_id]._id]['sub_reply'] = {};
-							response[post_id]['reply'][replies[reply_id]._id]['total_sub_reply'] = 0;
+						response[post_id]['total_reply'] = Object.keys(response[post_id]['reply']).length;
+					}
+					var user_name = response[post_id]['user']['name'];
+					user_name = user_name.trim().replace(/\s+/g,' ').split(' ');
+					var display_user_name = '';
+					for(var name_index in user_name){
+						if(name_index < 3){
+							display_user_name = display_user_name + user_name[name_index].charAt(0).toUpperCase();
 						}
 					}
-					response[post_id]['total_reply'] = Object.keys(response[post_id]['reply']).length;
+					response[post_id]['user']['display_name'] = display_user_name;
 				}
-				var user_name = response[post_id]['user']['name'];
-				user_name = user_name.trim().replace(/\s+/g,' ').split(' ');
-				var display_user_name = '';
-				for(var name_index in user_name){
-					if(name_index < 3){
-						display_user_name = display_user_name + user_name[name_index].charAt(0).toUpperCase();
-					}
-				}
-				response[post_id]['user']['display_name'] = display_user_name;
+				console.log(response);
+				$scope.posts = response;
 			}
-			// console.log(response);
-			$scope.posts = response;
-		}
+		});
+		
     };
-	function getTotalLikes(content_id){
+	function getTotalLikes(content_id, user_id){
 		var like_client = new XMLHttpRequest();
-		like_client.open("GET", '/api/post/getTotalLikes/' + content_id, false);
+		like_client.open("GET", '/api/post/getTotalLikes/' + content_id + '/' + user_id, false);
 		like_client.send();
 		if( like_client.status == 200 ){
-			return like_client.response;
+			return JSON.parse(like_client.response);
 		}
 	}
 	// Function to load all users on left sidebar.
@@ -211,11 +240,6 @@ angular.module('mean.post').controller('PostController', ['$scope', '$stateParam
 		}
 	};
 	
-	function userLoggedIn(){
-		$http.get('/api/users/me').success(function(response) {
-			console.log(response);
-		});
-	}
 		
 	}
 
