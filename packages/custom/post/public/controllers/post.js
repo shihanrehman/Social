@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mean.post').controller('PostController', ['$scope', '$rootScope', '$stateParams', '$location', 'Global', 'Post', 'MeanUser', 'Circles', '$http', '$q', function($scope, $rootScope, $stateParams, $location, Global, Post, MeanUser, Circles, $http, $q ) {
+angular.module('mean.post',['ngFileUpload']).controller('PostController', ['$scope', '$rootScope', '$stateParams', '$location', 'Upload', 'Global', 'Post', 'MeanUser', 'Circles', '$http', '$q', function($scope, $rootScope, $stateParams, $location, Upload, Global, Post, MeanUser, Circles, $http, $q ) {
     $scope.global = Global;
 	$scope.package = {
       name: 'post'
@@ -14,12 +14,11 @@ angular.module('mean.post').controller('PostController', ['$scope', '$rootScope'
 		content : '',
 		post_pid : 0
 	};
-	
+	$scope.post_media = '';
 	$scope.posts = {};
 	$scope.userDetail = {};
 	$scope.users_list = {};
 	$scope.postData = {};
-    
 	// load all posts records in scope variable.
 	loadPostData();
 	// load all users records in scope variable.
@@ -126,8 +125,8 @@ angular.module('mean.post').controller('PostController', ['$scope', '$rootScope'
 	
 	$scope.upload = function (mediaFile) {
 		console.log('file selected');
+		console.log('mediaFile');
 		$scope.post_media = mediaFile;
-		console.log("inputfile", $scope.post_media);
 		console.log("inputfile", $scope.post_media.$ngfBlobUrl);
 		console.log("inputfile", $scope.post_media.type);
 	};
@@ -174,6 +173,8 @@ angular.module('mean.post').controller('PostController', ['$scope', '$rootScope'
 								}
 							}
 							replies[reply_id]['user']['display_name'] = display_reply_user_name;
+
+							replies[reply_id]['display_date'] = getDisplayDate(replies[reply_id].created);
 							if( userDetail ){
 								var totalReplyLike = getTotalLikes(replies[reply_id]._id, userDetail._id);
 								replies[reply_id]['totalLikes'] = totalReplyLike.totalLikes;
@@ -193,6 +194,7 @@ angular.module('mean.post').controller('PostController', ['$scope', '$rootScope'
 					var user_name = response[post_id]['user']['name'];
 					user_name = user_name.trim().replace(/\s+/g,' ').split(' ');
 					var display_user_name = '';
+					response[post_id]['display_date'] = getDisplayDate(response[post_id].created);
 					for(var name_index in user_name){
 						if(name_index < 3){
 							display_user_name = display_user_name + user_name[name_index].charAt(0).toUpperCase();
@@ -206,6 +208,38 @@ angular.module('mean.post').controller('PostController', ['$scope', '$rootScope'
 		});
 		
     };
+	
+	function getDisplayDate(created){
+		var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+		var postDate = new Date(created);
+		var currDate = new Date().getTime();
+		var display_date = '';
+		if( ( currDate - postDate.getTime() ) <= 86400000 ){
+			var hourDiff  = ( currDate - postDate.getTime() );
+			var secDiff = hourDiff / 1000; //in s
+			var minDiff = hourDiff / 60 / 1000; //in minutes
+			var hDiff = Math.floor(hourDiff / 3600 / 1000); //in hours
+			if(hDiff == 0){
+				var mDiff = Math.floor(minDiff - 60 * hDiff);
+				if( mDiff < 1 ){
+					display_date = 'Just now';
+				} else {
+					display_date = mDiff + ' mins ago';
+				}
+			} else {
+				display_date = hDiff + ' hours ago';
+			}
+		} else {
+			var ampm = 'AM';
+			var hour = postDate.getHours();
+			if( postDate.getHours() > 12 ){
+				ampm = 'AM';
+				hour = hour-12;
+			}
+			display_date = postDate.getFullYear() + ', ' + (monthNames[postDate.getMonth()]) + ' ' + postDate.getDate() + ' at ' + hour + ':' + postDate.getMinutes() + ' ' + ampm;
+		}
+		return display_date;
+	};
 	function getTotalLikes(content_id, user_id){
 		var like_client = new XMLHttpRequest();
 		like_client.open("GET", '/api/post/getTotalLikes/' + content_id + '/' + user_id, false);

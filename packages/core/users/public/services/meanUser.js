@@ -68,6 +68,8 @@ angular.module('mean.users').factory('MeanUser', [ '$rootScope', '$http', '$loca
         localStorage.setItem('JWT', response.token);
         encodedUser = decodeURI(b64_to_utf8(response.token.split('.')[1]));
         user = JSON.parse(encodedUser); 
+		  $(document).find('#loginModal').modal('hide');
+		  $(document).find('#registerModal').modal('hide');
       }
       destination = angular.isDefined(response.redirect) ? response.redirect : destination;
       this.user = user || response;
@@ -81,6 +83,7 @@ angular.module('mean.users').factory('MeanUser', [ '$rootScope', '$http', '$loca
 
     MeanUserKlass.prototype.onIdFail = function (response) {
       $location.path(response.redirect);
+	  $(document).find('.modal-body .alert').css('display','block');
       this.loginError = 'Authentication failed.';
       this.registerError = response;
       this.validationError = response.msg;

@@ -134,7 +134,7 @@ module.exports = function(MeanUser) {
                 payload.redirect = req.body.redirect;
                 var escaped = JSON.stringify(payload);
                 escaped = encodeURI(escaped);
-                /*req.logIn(user, function(err) {
+                req.logIn(user, function(err) {
                     if (err) { return next(err); }
 
                     MeanUser.events.publish({
@@ -149,7 +149,7 @@ module.exports = function(MeanUser) {
                     // We are sending the payload inside the token
                     var token = jwt.sign(escaped, config.secret, { expiresInMinutes: 60*5 });
                     res.json({ token: token });
-                });*/
+                });
                 res.status(200);
             });
         },

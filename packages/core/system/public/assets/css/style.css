@@ -201,3 +201,11 @@ header { color:#394356; font-size:14px; background:#fff; width:100%; display:inl
 .comment-list-right.sub-comment-css > .comment-here { width:100%;}
 .sub-comment-reply { display: none; vertical-align: top;  width: 100%;}
 .view_all_reply,.view_all_sub_reply {float: right;}
+.post_date {
+	color: #82868d;
+    font-size: 13px;
+    padding-bottom: 10px;
+}
+.logo img{
+	cursor: pointer;
+}

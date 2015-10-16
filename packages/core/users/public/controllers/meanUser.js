@@ -39,15 +39,12 @@ angular.module('mean.users')
       };
 
       $rootScope.$on('loginfailed', function(){
-        $(document).find('#loginModal').modal('show');
 		vm.loginError = MeanUser.loginError;
       });
 
       // Register the login() function
       vm.login = function() {
 		MeanUser.login(this.user);
-		// this will close the pop-up after login.
-		$(document).find('#loginModal').modal('hide');
 	  };
     }
   ])
