@@ -14,8 +14,10 @@ module.exports = function(Post, app, auth, database) {
 	app.route('/api/post/setLike')
 		.post(auth.requiresLogin, post.setLike);
 	
-	app.route('/api/post/getall')
+	app.route('/api/post/getall/:start/:limit')
 		.get(post.getall);
+	app.route('/api/post/countAllPosts')
+		.get(post.countAllPosts);
 	app.route('/api/post/getAllUsers')
 		.get(post.getAllUsers);
 	app.route('/api/post/getAllReply/:postId')

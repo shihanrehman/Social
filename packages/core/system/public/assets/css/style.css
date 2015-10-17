@@ -209,3 +209,11 @@ header { color:#394356; font-size:14px; background:#fff; width:100%; display:inl
 .logo img{
 	cursor: pointer;
 }
+.pagination_div span{
+	color: #3b589e;
+	cursor: pointer;
+	margin: 0 7px;
+}
+.next_page{
+	float: right;
+}

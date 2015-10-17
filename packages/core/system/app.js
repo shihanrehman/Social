@@ -19,8 +19,11 @@ SystemPackage.register(function(app, auth, database, circles) {
   //We enable routing. By default the Package Object is passed to the routes
   SystemPackage.routes(app, auth, database);
 
-  SystemPackage.aggregateAsset('css', 'common.css');
-  SystemPackage.angularDependencies(['mean-factory-interceptor']);
+	SystemPackage.aggregateAsset('css', 'common.css');
+	SystemPackage.aggregateAsset('js', 'ng-file-upload.min.js');
+	SystemPackage.aggregateAsset('js', 'ng-file-upload-shim.js');
+	SystemPackage.aggregateAsset('js', 'jquery.twbsPagination.js');
+	SystemPackage.angularDependencies(['mean-factory-interceptor']);
   
 
   // The middleware in config/express will run before this code

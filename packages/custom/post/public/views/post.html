@@ -137,6 +137,10 @@
 						</div>
 					</li>
 				</ul>
+				<div class="pagination_div">
+					<span class="prev_page" ng-click="loadPrevPostData()" ng-if="start != 0"><i class="fa fa-3x fa-chevron-circle-left"></i></span>
+					<span class="next_page" ng-click="loadNextPostData()" ng-if="allowNext == 0"><i class="fa fa-3x fa-chevron-circle-right"></i></span>
+				</div>
 			</div>
         </div>
 	</div>
@@ -369,6 +373,15 @@
 				$('.sub-comment-div-' + id).css('display','none');
 			}else{
 				$('.sub-comment-div-' + id).css('display','inline-block');
+			}
+		});
+		$('.page_numbers').twbsPagination({
+			<!-- totalPages: {{total_pages}}, -->
+			totalPages: 10,
+			visiblePages: 5,
+			href:'javascript:void(0)',
+			onPageClick: function (event, page) {
+				console.log(page);
 			}
 		});
 	});

@@ -19,6 +19,11 @@ angular.module('mean.post',['ngFileUpload']).controller('PostController', ['$sco
 	$scope.userDetail = {};
 	$scope.users_list = {};
 	$scope.postData = {};
+	$scope.start = 0;
+	$scope.limit = 5;
+	$scope.totalPosts = 0;
+	$scope.allowNext = 0;
+	countAllPosts();
 	// load all posts records in scope variable.
 	loadPostData();
 	// load all users records in scope variable.
@@ -98,7 +103,25 @@ angular.module('mean.post',['ngFileUpload']).controller('PostController', ['$sco
 			console.log(data);
 		});
 	};
-	$scope.loadPostData = function(post_id) {
+	$scope.loadPostData = function() {
+		$scope.start = 0;
+		countAllPosts();
+		// load all posts records in scope variable.
+		loadPostData($scope.start, $scope.limit);
+		// load all users records in scope variable.
+		loadAllUsers();
+	};
+	$scope.loadNextPostData = function() {
+		$scope.start = $scope.start + $scope.limit;
+		countAllPosts();
+		// load all posts records in scope variable.
+		loadPostData();
+		// load all users records in scope variable.
+		loadAllUsers();
+	};
+	$scope.loadPrevPostData = function() {
+		$scope.start = $scope.start - $scope.limit;
+		countAllPosts();
 		// load all posts records in scope variable.
 		loadPostData();
 		// load all users records in scope variable.
@@ -147,11 +170,13 @@ angular.module('mean.post',['ngFileUpload']).controller('PostController', ['$sco
 		isUserLoggedin().then(function(userDetail){
 			var replies = '';
 			var client = new XMLHttpRequest();
-			client.open("GET", "/api/post/getall/", false);
+			client.open("GET", "/api/post/getall/" + $scope.start + "/" + $scope.limit, false);
 			client.send();
 			if( client.status == 200 ){
 				var response = JSON.parse(client.response);
 				for(var post_id in response){
+					response[post_id]['totalLikes'] = 0;
+					response[post_id]['isLike'] = 0;
 					if( userDetail ){
 						var totalPostLike = getTotalLikes(response[post_id]._id,userDetail._id);
 						response[post_id]['totalLikes'] = totalPostLike.totalLikes;
@@ -175,6 +200,8 @@ angular.module('mean.post',['ngFileUpload']).controller('PostController', ['$sco
 							replies[reply_id]['user']['display_name'] = display_reply_user_name;
 
 							replies[reply_id]['display_date'] = getDisplayDate(replies[reply_id].created);
+							replies[reply_id]['totalLikes'] = 0;
+							replies[reply_id]['isLike'] = 0;
 							if( userDetail ){
 								var totalReplyLike = getTotalLikes(replies[reply_id]._id, userDetail._id);
 								replies[reply_id]['totalLikes'] = totalReplyLike.totalLikes;
@@ -240,6 +267,16 @@ angular.module('mean.post',['ngFileUpload']).controller('PostController', ['$sco
 		}
 		return display_date;
 	};
+	
+	function countAllPosts(){
+		var count_client = new XMLHttpRequest();
+		count_client.open("GET", '/api/post/countAllPosts/', false);
+		count_client.send();
+		if( count_client.status == 200 ){
+			$scope.totalPosts = count_client.response;
+			$scope.allowNext = Math.floor( ( $scope.start + $scope.limit )/$scope.totalPosts );
+		}
+	}
 	function getTotalLikes(content_id, user_id){
 		var like_client = new XMLHttpRequest();
 		like_client.open("GET", '/api/post/getTotalLikes/' + content_id + '/' + user_id, false);

@@ -169,7 +169,9 @@ module.exports = function(Post) {
 			});
 				
 			return 0;*/
-			Postm.find().sort('-created').populate('user', 'name username').exec(function(err, posts) {
+			var start = req.params.start;
+			var limit = req.params.limit;
+			Postm.find().sort('-created').skip(start).limit(limit).populate('user', 'name username').exec(function(err, posts) {
                 if (err) {
                     return res.status(500).json({
                         error: 'Cannot list the articles'
@@ -190,6 +192,19 @@ module.exports = function(Post) {
                     });
                 }
                 res.json(users);
+            });
+        },
+		/**
+         * returns total count of Posts
+         */
+        countAllPosts: function(req, res) {
+			Postm.count().exec(function(err, totalCount) {
+                if (err) {
+                    return res.status(500).json({
+                        error: 'Cannot list the articles'
+                    });
+                }
+                res.json(totalCount);
             });
         },
 		

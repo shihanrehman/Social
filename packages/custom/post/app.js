@@ -31,8 +31,8 @@ Post.register(function(app, auth, database) {
   });
   
   Post.aggregateAsset('css', 'post.css');
-  Post.aggregateAsset('js', 'ng-file-upload.min.js');
-  Post.aggregateAsset('js', 'ng-file-upload-shim.js');
+  // Post.aggregateAsset('js', 'ng-file-upload.min.js');
+  // Post.aggregateAsset('js', 'ng-file-upload-shim.js');
 
   /**
     //Uncomment to use. Requires meanio@0.3.7 or above
